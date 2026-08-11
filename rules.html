@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>प्रतियोगिताका नियमहरू</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .quiz-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 10s infinite ease-in-out;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .quiz-icon:nth-child(1) { left: 5%; top: 15%; animation-delay: 0s; }
+        .quiz-icon:nth-child(2) { left: 85%; top: 25%; animation-delay: 2s; }
+        .quiz-icon:nth-child(3) { left: 15%; top: 65%; animation-delay: 4s; }
+        .quiz-icon:nth-child(4) { left: 75%; top: 85%; animation-delay: 1s; }
+        .quiz-icon:nth-child(5) { left: 45%; top: 5%; animation-delay: 3s; }
+        .quiz-icon:nth-child(6) { left: 95%; top: 60%; animation-delay: 5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+        }
+
+        .header {
+            background-color: #3182ce;
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        .page-title h2 {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 15px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(229, 62, 62, 0.3);
+            margin: 0;
+        }
+
+        .rules-display {
+            width: 100%;
+            max-width: 850px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .rule-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            padding: 35px 45px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .rule-number {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+            min-width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(49, 130, 206, 0.4);
+        }
+
+        .rule-text {
+            flex: 1;
+            color: #2d3748;
+            font-size: 1.2rem;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .page-indicator {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3748;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dots-navigation {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-shrink: 0;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(1.2);
+        }
+
+        .dot.active {
+            background: white;
+            border-color: #3182ce;
+            transform: scale(1.3);
+        }
+
+        @media (max-width: 768px) {
+            .page-title h2 {
+                font-size: 1.5rem;
+                padding: 10px 30px;
+            }
+
+            .rule-card {
+                padding: 25px 30px;
+                gap: 20px;
+                min-height: 120px;
+            }
+
+            .rule-number {
+                min-width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+
+            .rule-text {
+                font-size: 1.05rem;
+            }
+
+            .nav-btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title h2 {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+            }
+
+            .rule-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+                min-height: auto;
+            }
+
+            .rule-number {
+                min-width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+            }
+
+            .rule-text {
+                font-size: 0.95rem;
+            }
+
+            .navigation {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="marking.html" class="scoreboard-btn" aria-label="See Scoreboard">
+        <span class="scoreboard-txt" aria-hidden="true">Scoreboard</span>
+    </a>
+    <div class="bg-animation">
+        <div class="quiz-icon">📖</div>
+        <div class="quiz-icon">✅</div>
+        <div class="quiz-icon">📝</div>
+        <div class="quiz-icon">⚖️</div>
+        <div class="quiz-icon">📋</div>
+        <div class="quiz-icon">✓</div>
+    </div>
+
+    <a href="Welcome.html" class="go-back-btn">
+        <span class="go-back-arrow">←</span>
+        <span>Home</span>
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div class="left-section">
+                    <div class="school-logo">
+                        <img src="assets/school_logo.png" width="150" height="150" alt="Om Shanti Academy Logo" />
+                    </div>
+                    <div class="school-info">
+                        <h1>OM SHANTI ACADEMY</h1>
+                        <div class="school-tagline">"An activity based school"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="competition-section">
+                <div class="competition-title">सातौं अन्तर टोल विकास संस्था महिला (आमा) समूह हाजिरी जवाफ प्रतियोगिता २०८२</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="page-title">
+                <h2>नियमहरू</h2>
+            </div>
+
+            <div class="rules-display">
+                <div class="rule-card" id="ruleCard">
+                    <div class="rule-number" id="ruleNumber">१</div>
+                    <div class="rule-text" id="ruleText">सहभागीहरूलाई गोला प्रथाद्वारा विभिन्न समूहमा बाँडिनेछ।</div>
+                </div>
+
+                <div class="navigation">
+                    <button class="nav-btn" id="prevBtn" onclick="previousRule()">
+                        <span>←</span> अघिल्लो
+                    </button>
+                    <div class="page-indicator">
+                        <span id="currentPage">१</span> / <span id="totalPages">९</span>
+                    </div>
+                    <button class="nav-btn" id="nextBtn" onclick="nextRule()">
+                        पछिल्लो <span>→</span>
+                    </button>
+                </div>
+
+                <div class="dots-navigation" id="dotsNav"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const rules = [
+            { number: '१', text: 'सहभागीहरूलाई गोला प्रथाद्वारा विभिन्न समूहमा बाँडिनेछ।' },
+            { number: '२', text: 'प्रश्न एक चरण Clock-wise र अर्को चरण Anti-clockwise सोधिनेछ।' },
+            { number: '३', text: 'प्रश्न रोज्ने समूहले उत्तरको लागि ३० सेकेन्ड र पास भएर गएको प्रश्नको लागि बाँकी समूहले १५/१५ सेकेन्ड पाउनेछ।' },
+            { number: '४', text: 'बौद्धिक परीक्षण प्रश्नको हकमा सुरुको समूहले १ मिनेट र पास भएर गएको प्रश्नको लागि बाँकी समूहले ३०/३० सेकेन्ड पाउनेछ।' },
+            { number: '५', text: 'उत्तर समूहको कुनै एक सदस्यले मात्र दिनुपर्नेछ।' },
+            { number: '६', text: 'सम्बन्धित समूहले सोधिएको प्रश्न मिलाएमा १० अंक र पास भएको प्रश्न मिलाएमा ५ अंक दिइनेछ।' },
+            { number: '७', text: 'समय सकिएपछि आएको उत्तर मान्य हुने छैन।' },
+            { number: '८', text: 'कुनै पनि किसिमको विवाद आएमा निर्णायक मण्डलको निर्णय नै अन्तिम हुनेछ र पाण्डुलिपिको उत्तरलाई नै सही मानिनेछ।' },
+            { number: '९', text: 'अन्त्यमा कुनै समूहहरूले बराबर अंक प्राप्त गरेमा निर्णयको लागि पुनः प्रश्न सोधिनेछ।' }
+        ];
+
+        const nepaliNumbers = ['१', '२', '३', '४', '५', '६', '७', '८', '९'];
+        let currentIndex = 0;
+
+        function updateDisplay() {
+            const rule = rules[currentIndex];
+            document.getElementById('ruleNumber').textContent = rule.number;
+            document.getElementById('ruleText').textContent = rule.text;
+            document.getElementById('currentPage').textContent = nepaliNumbers[currentIndex];
+            document.getElementById('totalPages').textContent = nepaliNumbers[rules.length - 1];
+            
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === rules.length - 1;
+            
+            updateDots();
+        }
+
+        function createDots() {
+            const dotsNav = document.getElementById('dotsNav');
+            dotsNav.innerHTML = '';
+            rules.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (index === currentIndex) dot.classList.add('active');
+                dot.onclick = () => goToRule(index);
+                dotsNav.appendChild(dot);
+            });
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function nextRule() {
+            if (currentIndex < rules.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            }
+        }
+
+        function previousRule() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            }
+        }
+
+        function goToRule(index) {
+            currentIndex = index;
+            updateDisplay();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                nextRule();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                previousRule();
+            }
+        });
+
+        // Initialize
+        createDots();
+        updateDisplay();
+    </script>
+    <script src="../overall-scripts/common-header.js"></script>
+</body>
+</html>

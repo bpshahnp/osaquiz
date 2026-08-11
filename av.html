@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Visual</title>
+    <link rel="stylesheet" href="../assets/av.css">
+</head>
+<body>
+    <a href="dashboard.html" class="go-back-btn">
+        <span class="go-back-arrow">←</span>
+        <span>Dashboard</span>
+    </a>
+    <a href="marking.html" class="scoreboard-btn" aria-label="See Scoreboard">
+        <span class="scoreboard-txt" aria-hidden="true">Scoreboard</span>
+    </a>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div class="left-section">
+                    <div class="school-logo">
+                        <img src="assets/school_logo.png" alt="Om Shanti Academy Logo" />
+                    </div>
+                    <div class="school-info">
+                        <h1>OM SHANTI ACADEMY</h1>
+                        <div class="school-tagline">"An activity based school"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="competition-section">
+                <div class="competition-title">सातौं अन्तर टोल विकास संस्था महिला (आमा) समुह हाजिरी जवाफ प्रतियोगिता २०८२</div>
+            </div>
+        </div>
+        
+        <div class="question-nav" id="questionNav">
+            <span class="nav-label">Questions:</span>
+            <div class="nav-controls">
+                <button class="reset-btn" id="resetBtn">🔄 Reset Progress</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="no-question" id="noQuestionState">
+                <h2>🎬 श्रव्यद‍ृश्य</h2>
+                <p>Select a question from the navigation above to display the media content.</p>
+            </div>
+            
+            <div id="questionDisplay" style="display: none;">
+                <div class="content-area">
+                    <div class="question-section">
+                        <div class="question-text-area">
+                            <div class="question-header">
+                                <h3 id="questionRound">Audio Visual Round</h3>
+                            </div>
+                            
+                            <div class="question-hint" id="questionHint">
+                                What is shown in the media?
+                            </div>
+                            
+                            <div class="reveal-button-container">
+                                <button class="reveal-btn" id="revealAnswerBtn">📝 Reveal Answer</button>
+                            </div>
+                            
+                            <div class="answer-section" id="answerSection">
+                                <div class="answer-content">
+                                    <div class="answer-label">Answer:</div>
+                                    <div class="answer-solution" id="answerText">Answer will appear here</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timers-section">
+                            <div class="current-timer-label">Current Timer</div>
+                            <div class="timer-card" id="currentTimerCard">
+                                <div class="timer-name" id="timerName">Timer 1</div>
+                                <div class="timer-display-time" id="timerDisplayTime">00:30</div>
+                                <div class="timer-display-status" id="timerDisplayStatus">Click Start to begin</div>
+                                <div class="timer-controls">
+                                    <button class="timer-btn" id="startBtn">▶ Start</button>
+                                    <button class="timer-btn" id="stopBtn" disabled>⏸ Stop</button>
+                                    <button class="timer-btn" id="nextBtn">⏭ Next</button>
+                                </div>
+                            </div>
+                            <div class="timer-queue" id="timerQueue"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="media-section">
+                        <div class="media-container" id="mediaContainer">
+                            <div class="media-type-badge" id="mediaTypeBadge">VIDEO</div>
+                            <div class="media-content" id="mediaContent">
+                                <div class="media-placeholder">Media will appear here</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const QUIZ_QUESTIONS = {
+            1: { id: 1, title: "Movie Identification", round: "Audio Visual Round", type: "video", mediaUrl: "assets/Q1.mp4", hint: "प्रस्तुत भिडियो क्लिप कुन नेपाली चलचित्रबाट लिइएको हो ?", answer: "पशुपति प्रसाद" },
+            2: { id: 2, title: "Model Identification", round: "Audio Visual Round", type: "video", mediaUrl: "assets/Q2.mp4", hint: "प्रस्तुत गरिएको गीतमा देखिनु भएको मोडलको नाम के हो ?", answer: "झरना बज्राचार्य" },
+            3: { id: 3, title: "Lyrics Completion", round: "Audio Visual Round", type: "audio", mediaUrl: "assets/Q3.mp3", hint: "प्रस्तुत गीत यति चोखो यति मिठो दिउँला तिमीलाई माया........यसको पछिल्लो भाग पुरा गर्नुहोस् ।", answer: "बिर्सनेछन् साराले पुराना प्रेमका कथा" },
+            4: { id: 4, title: "Voice Identification", round: "Audio Visual Round", type: "video", mediaUrl: "assets/Q4.mp4", hint: "प्रस्तुत भिडियो क्लिपमा रहेको आवाज कसको हो ?", answer: "मलाला युसुफजाइ" },
+            5: { id: 5, title: "Athlete Identification", round: "Audio Visual Round", type: "image", mediaUrl: "assets/Q5.jpg", hint: "प्रस्तुत नेपाली फुटबल खेलाडीको पुरा नाम के हो ?", answer: "सावित्रा भण्डारी (साम्बा)" },
+            6: { id: 6, title: "International Figure", round: "Audio Visual Round", type: "video", mediaUrl: "assets/Q6.mp4", hint: "प्रस्तुत भिडियोमा देखाइएकी विश्व चर्चित महिला को हुन् ?", answer: "कमला ह्‍यारिस" },
+            7: { id: 7, title: "Voice Identification", round: "Audio Visual Round", type: "audio", mediaUrl: "assets/Q7.mp3", hint: "प्रस्तुत आवाज कसको हो ?", answer: "रमा सिङ" },
+            8: { id: 8, title: "Personality Identification", round: "Audio Visual Round", type: "video", mediaUrl: "assets/Q8.mp4", hint: "प्रस्तुत भिडियोमा देखाइएकी नेपाली महिला को हुन् ?", answer: "पुष्पा वस्नेत" },
+            9: { id: 9, title: "Athlete Identification", round: "Audio Visual Round", type: "video", mediaUrl: "assets/Q9.mp4", hint: "प्रस्तुत भिडियोमा देखाइएको नेपालका चर्चित खेलाडीको नाम के हो ?", answer: "पारस खड्का" },
+            10: { id: 10, title: "Political Voice", round: "Audio Visual Round", type: "audio", mediaUrl: "assets/Q10.mp3", hint: "यो अडियो क्लिपमा सुन्‍नु भएको आवज कसको हो ?", answer: "मदन भण्डारी" },
+            11: { id: 11, title: "Voice Identification", round: "Audio Visual Round", type: "video", mediaUrl: "assets/Q11.mp4", hint: "प्रस्तुत भिडियोमा देखाइएकी चर्चित महिला को हुन् ?", answer: "सुनिता डङ्गोल" },
+            12: { id: 12, title: "Global Politician", round: "Audio Visual Round", type: "image", mediaUrl: "assets/Q12.jpg", hint: "प्रस्तुत विश्व चर्चित महिला राजनितिज्ञ को हुन् ?", answer: "एन्जेला मर्केल" },
+            13: { id: 13, title: "Voice Identification", round: "Audio Visual Round", type: "audio", mediaUrl: "assets/Q13.m4a", hint: "यो अडियो क्लिपको आवज कसको हो ?", answer: "सुदन गुरुङ" }
+        };
+
+        class AudioVisualQuizGame {
+            constructor() {
+                this.timers = [
+                    { id: 1, duration: 30, label: 'Timer 1' },
+                    { id: 2, duration: 15, label: 'Timer 2' },
+                    { id: 3, duration: 15, label: 'Timer 3' },
+                    { id: 4, duration: 15, label: 'Timer 4' },
+                    { id: 5, duration: 15, label: 'Timer 5' },
+                    { id: 6, duration: 15, label: 'Timer 6' },
+                    { id: 7, duration: 15, label: 'Timer 7' },
+                    { id: 8, duration: 15, label: 'Timer 8' }
+                ];
+                this.currentTimerIndex = 0;
+                this.interval = null;
+                this.audioContext = null;
+                this.completedTimers = new Set();
+                this.currentQuestionId = null;
+                this.visitedQuestions = new Set();
+                this.isRunning = false;
+                this.timeLeft = 0;
+                this.init();
+            }
+
+            init() {
+                this.loadVisitedQuestions();
+                this.createQuestionNavigation();
+                this.updateTimerDisplay();
+                this.createTimerQueue();
+                this.setupEventListeners();
+                this.initAudio();
+                this.handleUrlRouting();
+            }
+
+            loadVisitedQuestions() {
+                try {
+                    const stored = JSON.parse(sessionStorage.getItem('quiz_visited_questions_av') || '[]');
+                    this.visitedQuestions = new Set(stored);
+                } catch (e) {
+                    this.visitedQuestions = new Set();
+                }
+            }
+
+            saveVisitedQuestions() {
+                try {
+                    sessionStorage.setItem('quiz_visited_questions_av', JSON.stringify([...this.visitedQuestions]));
+                } catch (e) {}
+            }
+
+            markQuestionAsVisited(questionId) {
+                this.visitedQuestions.add(questionId);
+                this.saveVisitedQuestions();
+                this.updateQuestionStatus();
+            }
+
+            resetProgress() {
+                if (confirm('Are you sure you want to reset all progress?')) {
+                    this.visitedQuestions.clear();
+                    this.resetTimers();
+                    this.resetAnswerState();
+                    try {
+                        sessionStorage.clear();
+                    } catch (e) {}
+                    this.updateQuestionStatus();
+                    
+                    const resetBtn = document.getElementById('resetBtn');
+                    const originalText = resetBtn.textContent;
+                    resetBtn.textContent = '✅ Reset Complete';
+                    resetBtn.style.background = '#48bb78';
+                    setTimeout(() => {
+                        resetBtn.textContent = originalText;
+                        resetBtn.style.background = '';
+                    }, 2000);
+                }
+            }
+
+            updateQuestionStatus() {
+                document.querySelectorAll('.question-link').forEach(link => {
+                    const questionId = parseInt(link.dataset.questionId);
+                    link.classList.toggle('visited', this.visitedQuestions.has(questionId));
+                });
+            }
+
+            createQuestionNavigation() {
+                const nav = document.getElementById('questionNav');
+                const controls = nav.querySelector('.nav-controls');
+                
+                Object.values(QUIZ_QUESTIONS).forEach(question => {
+                    const link = document.createElement('a');
+                    link.href = `#question-${question.id}`;
+                    link.className = 'question-link';
+                    link.textContent = `Q${question.id}`;
+                    link.dataset.questionId = question.id;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.loadQuestion(question.id);
+                        this.updateUrl(question.id);
+                    });
+                    nav.insertBefore(link, controls);
+                });
+            }
+
+            handleUrlRouting() {
+                const hash = window.location.hash;
+                if (hash.startsWith('#question-')) {
+                    const questionId = parseInt(hash.replace('#question-', ''));
+                    if (QUIZ_QUESTIONS[questionId]) this.loadQuestion(questionId);
+                }
+                window.addEventListener('hashchange', () => {
+                    const hash = window.location.hash;
+                    if (hash.startsWith('#question-')) {
+                        const questionId = parseInt(hash.replace('#question-', ''));
+                        if (QUIZ_QUESTIONS[questionId]) this.loadQuestion(questionId);
+                    } else if (hash === '') {
+                        this.showNoQuestionState();
+                    }
+                });
+            }
+
+            updateUrl(questionId) {
+                window.history.pushState(null, '', `#question-${questionId}`);
+            }
+
+            loadQuestion(questionId) {
+                const question = QUIZ_QUESTIONS[questionId];
+                if (!question) return;
+
+                this.currentQuestionId = questionId;
+                this.markQuestionAsVisited(questionId);
+                this.resetTimers();
+                this.resetAnswerState();
+
+                document.querySelectorAll('.question-link').forEach(link => {
+                    link.classList.toggle('active', link.dataset.questionId == questionId);
+                });
+
+                document.getElementById('questionRound').textContent = question.round;
+                document.getElementById('questionHint').textContent = question.hint;
+                document.getElementById('answerText').textContent = question.answer;
+
+                this.loadMedia(question);
+
+                document.getElementById('noQuestionState').style.display = 'none';
+                document.getElementById('questionDisplay').style.display = 'block';
+            }
+
+            loadMedia(question) {
+                const mediaContent = document.getElementById('mediaContent');
+                const mediaTypeBadge = document.getElementById('mediaTypeBadge');
+                
+                mediaContent.innerHTML = '';
+                
+                const typeLabels = { video: '🎬 VIDEO', image: '🖼️ IMAGE', audio: '🎵 AUDIO' };
+                mediaTypeBadge.textContent = typeLabels[question.type] || 'MEDIA';
+
+                if (question.type === 'video') {
+                    const video = document.createElement('video');
+                    video.controls = true;
+                    video.controlsList = 'nodownload';
+                    video.src = question.mediaUrl;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    mediaContent.appendChild(video);
+                } else if (question.type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = question.mediaUrl;
+                    img.alt = question.title;
+                    mediaContent.appendChild(img);
+                } else if (question.type === 'audio') {
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.controlsList = 'nodownload';
+                    audio.src = question.mediaUrl;
+                    mediaContent.appendChild(audio);
+                }
+            }
+
+            showNoQuestionState() {
+                this.currentQuestionId = null;
+                this.resetTimers();
+                document.querySelectorAll('.question-link').forEach(link => link.classList.remove('active'));
+                document.getElementById('noQuestionState').style.display = 'block';
+                document.getElementById('questionDisplay').style.display = 'none';
+            }
+
+            resetTimers() {
+                if (this.interval) {
+                    clearInterval(this.interval);
+                    this.interval = null;
+                }
+                this.currentTimerIndex = 0;
+                this.completedTimers.clear();
+                this.isRunning = false;
+                this.timeLeft = this.timers[0].duration;
+                this.updateTimerDisplay();
+                this.createTimerQueue();
+                this.updateButtons();
+            }
+
+            updateTimerDisplay() {
+                const currentTimer = this.timers[this.currentTimerIndex];
+                const card = document.getElementById('currentTimerCard');
+                
+                document.getElementById('timerName').textContent = currentTimer.label;
+                document.getElementById('timerDisplayTime').textContent = this.formatTime(this.timeLeft || currentTimer.duration);
+                
+                card.className = 'timer-card';
+                
+                if (this.isRunning) {
+                    card.classList.add('active');
+                    document.getElementById('timerDisplayStatus').textContent = 'Running...';
+                    if (this.timeLeft <= 5 && this.timeLeft > 0) card.classList.add('warning');
+                } else if (this.completedTimers.has(this.currentTimerIndex)) {
+                    card.classList.add('finished');
+                    document.getElementById('timerDisplayStatus').textContent = 'Finished';
+                } else {
+                    document.getElementById('timerDisplayStatus').textContent = 'Click Start to begin';
+                }
+            }
+
+            createTimerQueue() {
+                const queue = document.getElementById('timerQueue');
+                queue.innerHTML = '';
+                
+                this.timers.forEach((timer, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'queue-item';
+                    item.title = timer.label;
+                    if (this.completedTimers.has(index)) item.classList.add('completed');
+                    else if (index === this.currentTimerIndex) item.classList.add('current');
+                    queue.appendChild(item);
+                });
+            }
+
+            updateButtons() {
+                document.getElementById('startBtn').disabled = this.isRunning || this.completedTimers.has(this.currentTimerIndex);
+                document.getElementById('stopBtn').disabled = !this.isRunning;
+                document.getElementById('nextBtn').disabled = this.currentTimerIndex >= this.timers.length - 1;
+            }
+
+            startTimer() {
+                if (!this.currentQuestionId) {
+                    alert('Please select a question first!');
+                    return;
+                }
+                if (this.audioContext && this.audioContext.state === 'suspended') this.audioContext.resume();
+                
+                this.isRunning = true;
+                this.timeLeft = this.timers[this.currentTimerIndex].duration;
+                
+                const updateDisplay = () => {
+                    this.updateTimerDisplay();
+                    if (this.timeLeft <= 5 && this.timeLeft > 0) this.playBeep();
+                    if (this.timeLeft <= 0) {
+                        this.finishTimer();
+                        return;
+                    }
+                    this.timeLeft--;
+                };
+                
+                updateDisplay();
+                this.interval = setInterval(updateDisplay, 1000);
+                this.updateButtons();
+            }
+
+            stopTimer() {
+                if (this.interval) {
+                    clearInterval(this.interval);
+                    this.interval = null;
+                }
+                this.isRunning = false;
+                this.updateTimerDisplay();
+                this.updateButtons();
+            }
+
+            finishTimer() {
+                this.stopTimer();
+                this.completedTimers.add(this.currentTimerIndex);
+                this.timeLeft = 0;
+                this.updateTimerDisplay();
+                this.createTimerQueue();
+                this.updateButtons();
+                
+                for (let i = 0; i < 3; i++) setTimeout(() => this.playBeep(), i * 200);
+                
+                if (this.currentTimerIndex < this.timers.length - 1) {
+                    setTimeout(() => this.nextTimer(), 1000);
+                }
+            }
+
+            nextTimer() {
+                if (this.currentTimerIndex < this.timers.length - 1) {
+                    this.stopTimer();
+                    this.currentTimerIndex++;
+                    this.timeLeft = this.timers[this.currentTimerIndex].duration;
+                    this.updateTimerDisplay();
+                    this.createTimerQueue();
+                    this.updateButtons();
+                }
+            }
+
+            resetAnswerState() {
+                document.getElementById('answerSection').style.display = 'none';
+                document.getElementById('revealAnswerBtn').style.display = 'block';
+            }
+
+            setupEventListeners() {
+                document.getElementById('revealAnswerBtn').addEventListener('click', () => this.revealAnswer());
+                document.getElementById('resetBtn').addEventListener('click', () => this.resetProgress());
+                document.getElementById('startBtn').addEventListener('click', () => this.startTimer());
+                document.getElementById('stopBtn').addEventListener('click', () => this.stopTimer());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextTimer());
+            }
+
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {}
+            }
+
+            playBeep() {
+                if (!this.audioContext) return;
+                try {
+                    const osc = this.audioContext.createOscillator();
+                    const gain = this.audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(this.audioContext.destination);
+                    osc.frequency.setValueAtTime(800, this.audioContext.currentTime);
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+                    osc.start(this.audioContext.currentTime);
+                    osc.stop(this.audioContext.currentTime + 0.1);
+                } catch (e) {}
+            }
+
+            revealAnswer() {
+                if (!this.currentQuestionId) return;
+                document.getElementById('answerSection').style.display = 'block';
+                document.getElementById('revealAnswerBtn').style.display = 'none';
+            }
+
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => new AudioVisualQuizGame());
+    </script>
+    <!-- Add this before </body> -->
+<script src="../overall-scripts/common-header.js"></script>
+</body>
+</html>

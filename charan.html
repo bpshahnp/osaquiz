@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>प्रतियोगिता चरणहरू</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+        }
+
+        .page {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .header {
+            background-color: #3182ce;
+            flex-shrink: 0;
+        }
+
+        /* Main Page Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            overflow: auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h2 {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 15px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(229, 62, 62, 0.3);
+            margin: 0;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            display: block;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: #4a5568;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-blue {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+        }
+
+        .badge-orange {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+        }
+
+        /* Detail View Styles */
+        .detail-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .detail-header {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .detail-header.blue {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+        }
+
+        .detail-header.orange {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+        }
+
+        .detail-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .detail-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .carousel-container {
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 25px;
+        }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: slideIn 0.4s ease-out;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-card .number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .detail-card.blue .number {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+        }
+
+        .detail-card.orange .number {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+        }
+
+        .detail-card h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .detail-card p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .page-indicator {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3748;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-title h2 {
+                font-size: 1.5rem;
+                padding: 10px 30px;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .main-card {
+                padding: 25px;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+            }
+
+            .detail-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .detail-header p {
+                font-size: 0.9rem;
+            }
+
+            .detail-card {
+                padding: 30px 20px;
+                min-height: 180px;
+            }
+
+            .detail-card .number {
+                width: 70px;
+                height: 70px;
+                font-size: 2.5rem;
+            }
+
+            .detail-card h3 {
+                font-size: 1.4rem;
+            }
+
+            .detail-card p {
+                font-size: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title h2 {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+            }
+
+            .main-card {
+                padding: 20px;
+            }
+
+            .card-icon {
+                font-size: 2.5rem;
+            }
+
+            .card-title {
+                font-size: 1.2rem;
+            }
+
+            .card-description {
+                font-size: 0.9rem;
+            }
+
+            .detail-header {
+                padding: 15px 20px;
+            }
+
+            .detail-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .detail-card {
+                padding: 25px 15px;
+            }
+
+            .detail-card .number {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+
+            .detail-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .detail-card p {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="go-back-btn">
+        <span class="go-back-arrow">←</span>
+    </a>
+    <a href="marking.html" class="scoreboard-btn" aria-label="See Scoreboard">
+        <span class="scoreboard-txt" aria-hidden="true">Scoreboard</span>
+    </a>
+
+    <div class="container">
+        <!-- Main Page -->
+        <div id="main-page" class="page active">
+            <div class="header">
+                <div class="header-top">
+                    <div class="left-section">
+                        <div class="school-logo">
+                            <img src="assets/school_logo.png" alt="Om Shanti Academy Logo" />
+                        </div>
+                        <div class="school-info">
+                            <h1>OM SHANTI ACADEMY</h1>
+                            <div class="school-tagline">"An activity based school"</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="competition-section">
+                    <div class="competition-title">सातौं अन्तर टोल विकास संस्था महिला (आमा) समूह हाजिरी जवाफ प्रतियोगिता २०८२</div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="page-title">
+                    <h2>प्रतियोगिताका चरणहरू</h2>
+                </div>
+                <div class="cards-container">
+                    <div class="main-card" onclick="showPage('preliminary')">
+                        <span class="card-icon">📚</span>
+                        <div class="card-title">प्रारम्भिक छनौट चरण</div>
+                        <div class="card-description">
+                            ७ विधाका प्रश्नहरू<br>
+                            सबै प्रतियोगीहरूको लागि
+                        </div>
+                        <span class="card-badge badge-blue">चरण १</span>
+                    </div>
+
+                    <div class="main-card" onclick="showPage('final')">
+                        <span class="card-icon">🏆</span>
+                        <div class="card-title">अन्तिम चरण</div>
+                        <div class="card-description">
+                            १३ विधाका प्रश्नहरू<br>
+                            छनौट भएका प्रतियोगीहरूको लागि
+                        </div>
+                        <span class="card-badge badge-orange">चरण २</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preliminary Round Page -->
+        <div id="preliminary-page" class="page">
+            <div class="header">
+                <div class="header-top">
+                    <div class="left-section">
+                        <div class="school-logo">
+                            <img src="assets/school_logo.png" alt="Om Shanti Academy Logo" />
+                        </div>
+                        <div class="school-info">
+                            <h1>OM SHANTI ACADEMY</h1>
+                            <div class="school-tagline">"An activity based school"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-view">
+                <div class="detail-header blue">
+                    <h2>📚 प्रारम्भिक छनौट चरण</h2>
+                    <p>यस चरणमा सबै प्रतियोगीहरूले भाग लिन्छन्। ७ ओटा विधाबाट प्रश्नहरू सोधिन्छ।</p>
+                </div>
+
+                <div class="carousel-container">
+                    <div id="preliminary-card" class="detail-card blue"></div>
+                </div>
+
+                <div class="controls">
+                    <button class="nav-btn" onclick="prevCard('preliminary')" id="prev-preliminary">← अघिल्लो</button>
+                    <div class="page-indicator" id="indicator-preliminary"></div>
+                    <button class="nav-btn" onclick="nextCard('preliminary')" id="next-preliminary">पछिल्लो →</button>
+                </div>
+                <div class="back-btn-container">
+                    <button class="back-btn" onclick="showPage('main')">मुख्य पृष्ठ मा फर्कनुहोस्</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Round Page -->
+        <div id="final-page" class="page">
+            <div class="header">
+                <div class="header-top">
+                    <div class="left-section">
+                        <div class="school-logo">
+                            <img src="assets/school_logo.png" alt="Om Shanti Academy Logo" />
+                        </div>
+                        <div class="school-info">
+                            <h1>OM SHANTI ACADEMY</h1>
+                            <div class="school-tagline">"An activity based school"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-view">
+                <div class="detail-header orange">
+                    <h2>🏆 अन्तिम चरण</h2>
+                    <p>प्रारम्भिक छनौटबाट उत्तीर्ण भएका प्रतियोगीहरूको लागि। १३ ओटा विधाबाट प्रश्नहरू सोधिन्छ।</p>
+                </div>
+
+                <div class="carousel-container">
+                    <div id="final-card" class="detail-card orange"></div>
+                </div>
+
+                <div class="controls">
+                    <button class="nav-btn" onclick="prevCard('final')" id="prev-final">← अघिल्लो</button>
+                    <div class="page-indicator" id="indicator-final"></div>
+                    <button class="nav-btn" onclick="nextCard('final')" id="next-final">पछिल्लो →</button>
+                </div>
+                <div class="back-btn-container">
+                    <button class="back-btn" onclick="showPage('main')">← मुख्य पृष्ठ मा फर्कनुहोस्</button>
+                    <a href="dashboard.html" class="back-btn">अन्तिम चरण सुरु गर्नुहोस् →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const preliminaryData = [
+            {
+                number: '१',
+                title: 'ओम शान्ति एकेडेमी सम्बन्धी',
+                description: 'संस्थाको इतिहास, उद्देश्य, कार्यक्रम र योगदान सम्बन्धी प्रश्नहरू'
+            },
+            {
+                number: '२',
+                title: 'साहित्य, भाषा, कला, धर्म र संस्कृति',
+                description: 'नेपाली र विश्व साहित्य, भाषाविज्ञान, विभिन्न कला र सांस्कृतिक परम्परा'
+            },
+            {
+                number: '३',
+                title: 'नेपालको इतिहास',
+                description: 'नेपालका ऐतिहासिक घटना, राजवंश र महत्वपूर्ण व्यक्तित्व'
+            },
+            {
+                number: '४',
+                title: 'नेपाल तथा विश्वको भूगोल',
+                description: 'भौगोलिक स्थिति, नदी, पर्वत, जलवायु, प्राकृतिक स्रोत र महाद्वीपीय ज्ञान'
+            },
+            {
+                number: '५',
+                title: 'गाउँखाने कथा, उखान टुक्का तथा बौद्धिक परीक्षण',
+                description: 'पारम्परिक लोककथा, उखान, तार्किक क्षमता र समस्या समाधानको परीक्षण'
+            },
+            {
+                number: '६',
+                title: 'स्वास्थ्य, विज्ञान, जनसंख्या तथा वातावरण',
+                description: 'चिकित्सा विज्ञान, प्रविधि, जनसांख्यिकी, पर्यावरण संरक्षण र जलवायु परिवर्तन'
+            },
+            {
+                number: '७',
+                title: 'नेपाल तथा विश्वको समसामयिक घटनाक्रम',
+                description: 'हालैका महत्वपूर्ण घटना, समाचार, राजनीतिक र सामाजिक परिवर्तनहरू'
+            }
+        ];
+
+        const finalData = [
+            { number: '१', title: 'उखान', description: 'नेपाली भाषाका विभिन्न उखान, तिनको अर्थ र प्रयोग' },
+            { number: '२', title: 'गाउँखाने कथा', description: 'पारम्परिक कथा, पहेली र लोक साहित्यका विविध पक्षहरू' },
+            { number: '३', title: 'बौद्धिक परीक्षण', description: 'तर्कशक्ति, विश्लेषणात्मक क्षमता र समस्या समाधानको कौशल' },
+            { number: '४', title: 'भाषा, साहित्य, कला, धर्म र संस्कृति', description: 'गहन साहित्यिक ज्ञान, भाषिक सूक्ष्मता र सांस्कृतिक बुझाइ' },
+            { number: '५', title: 'विविध', description: 'विभिन्न विषयका मिश्रित र अप्रत्याशित प्रश्नहरू' },
+            { number: '६', title: 'नेपाल तथा विश्वको भूगोल', description: 'भौगोलिक तथ्य, नक्सा पहिचान र स्थानीय ज्ञान' },
+            { number: '७', title: 'नेपालको इतिहास', description: 'विस्तृत ऐतिहासिक ज्ञान र महत्वपूर्ण कालखण्डहरू' },
+            { number: '८', title: 'स्वास्थ्य, विज्ञान, जनसंख्या तथा वातावरण', description: 'वैज्ञानिक खोज, स्वास्थ्य नीति र पर्यावरणीय मुद्दाहरू' },
+            { number: '९', title: 'खेलकुद', description: 'राष्ट्रिय र अन्तर्राष्ट्रिय खेलकुद, खेलाडी र प्रतियोगिताहरू' },
+            { number: '१०', title: 'भनाइ, उक्ति तथा अन्तर्राष्ट्रिय संगठन', description: 'प्रसिद्ध व्यक्तित्वका भनाइ र विश्व संगठनहरूको जानकारी' },
+            { number: '११', title: 'नेपाल तथा विश्वको समसामयिक घटनाक्रम', description: 'ताजा घटना, समाचार र हालैका विश्व परिदृश्य' },
+            { number: '१२', title: 'श्रव्य दृश्य सामग्री', description: 'अडियो र भिडियो सामग्रीमा आधारित प्रश्नहरू' },
+            { number: '१३', title: 'Rapid Fire', description: 'द्रुत गतिमा उत्तर दिनुपर्ने छोटो र चटपटे प्रश्नहरू' }
+        ];
+
+        let currentIndex = {
+            preliminary: 0,
+            final: 0
+        };
+
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            if (pageName === 'main') {
+                document.getElementById('main-page').classList.add('active');
+            } else if (pageName === 'preliminary') {
+                document.getElementById('preliminary-page').classList.add('active');
+                currentIndex.preliminary = 0;
+                renderCard('preliminary');
+            } else if (pageName === 'final') {
+                document.getElementById('final-page').classList.add('active');
+                currentIndex.final = 0;
+                renderCard('final');
+            }
+        }
+
+        function renderCard(type) {
+            const data = type === 'preliminary' ? preliminaryData : finalData;
+            const index = currentIndex[type];
+            const card = document.getElementById(`${type}-card`);
+            const item = data[index];
+
+            card.innerHTML = `
+                <div class="number">${item.number}</div>
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+            `;
+
+            updateControls(type);
+        }
+
+        function updateControls(type) {
+            const data = type === 'preliminary' ? preliminaryData : finalData;
+            const index = currentIndex[type];
+            
+            document.getElementById(`indicator-${type}`).textContent = `${index + 1} / ${data.length}`;
+            document.getElementById(`prev-${type}`).disabled = index === 0;
+            document.getElementById(`next-${type}`).disabled = index === data.length - 1;
+        }
+
+        function nextCard(type) {
+            const data = type === 'preliminary' ? preliminaryData : finalData;
+            if (currentIndex[type] < data.length - 1) {
+                currentIndex[type]++;
+                renderCard(type);
+            }
+        }
+
+        function prevCard(type) {
+            if (currentIndex[type] > 0) {
+                currentIndex[type]--;
+                renderCard(type);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const prelimPage = document.getElementById('preliminary-page');
+            const finalPage = document.getElementById('final-page');
+            
+            if (prelimPage.classList.contains('active')) {
+                if (e.key === 'ArrowRight') nextCard('preliminary');
+                if (e.key === 'ArrowLeft') prevCard('preliminary');
+            } else if (finalPage.classList.contains('active')) {
+                if (e.key === 'ArrowRight') nextCard('final');
+                if (e.key === 'ArrowLeft') prevCard('final');
+            }
+        });
+    </script>
+    <script src="../overall-scripts/common-header.js"></script>
+</body>
+</html>

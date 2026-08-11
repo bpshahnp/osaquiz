@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    
+    <style>
+        /* Unique Dashboard Layout */
+        .nav-controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            margin-left: -20px;
+            margin-right: -20px;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+        
+        .instruction-text {
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            flex: 1;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .rounds-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1100px;
+            height: 100%;
+            max-height: 400px;
+        }
+        
+        .round-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .round-card.unvisited {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border-color: #2f855a;
+        }
+        
+        .round-card.visited {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            border-color: #9b2c2c;
+        }
+        
+        .round-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .round-card:focus {
+            outline: 3px solid #4299e1;
+            outline-offset: 2px;
+        }
+        
+        .round-icon { 
+            font-size: 2rem; 
+            margin-bottom: 8px; 
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); 
+        }
+        
+        .round-title { 
+            font-size: 1rem; 
+            font-weight: 600; 
+            margin-bottom: 5px; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1); 
+        }
+        /* Scoreboard Button */
+        .scoreboard-btn {
+            position: fixed; 
+            top: 10px; 
+            left: 80px; 
+            background: linear-gradient(135deg, #f6ad55, #dd6b20);
+            color: white; 
+            padding: 15px 30px;
+            border-radius: 30px; 
+            cursor: pointer;
+            z-index: 1000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-decoration: none;
+            transition: transform 0.2s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scoreboard-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .scoreboard-btn:focus {
+            outline: 3px solid #4299e1;
+            outline-offset: 2px;
+        }
+        
+        .scoreboard-txt { font-size: 1.1rem; }
+        .home-btn:focus {
+            outline: 3px solid #4299e1;
+            outline-offset: 2px;
+        }
+        
+        .home-icon { font-size: 2rem; }
+        
+        
+        /* Home Button & Legend */
+        .home-btn {
+            position: fixed; 
+            top: 10px; 
+            left: 10px; 
+            background: linear-gradient(135deg, #3182ce, #2d3748);
+            color: white; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            cursor: pointer;
+            z-index: 1000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        
+        .home-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .home-btn:focus {
+            outline: 3px solid #4299e1;
+            outline-offset: 2px;
+        }
+        
+        .home-icon { font-size: 2rem; }
+
+        .legend { 
+            display: flex; 
+            justify-content: center; 
+            gap: 30px; 
+            margin-left: 100px; 
+            flex-wrap: wrap; 
+        }
+        
+        .legend-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 0.9rem; 
+            color: #4a5568; 
+        }
+        
+        .legend-color { 
+            width: 20px; 
+            height: 20px; 
+            border-radius: 5px; 
+        }
+        
+        .legend-unvisited { background: linear-gradient(135deg, #48bb78, #38a169); }
+        .legend-visited { background: linear-gradient(135deg, #e53e3e, #c53030); }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) { 
+            .rounds-grid { 
+                grid-template-columns: repeat(3, 1fr); 
+                max-height: 500px; 
+            }
+            .legend { margin-left: 20px; }
+        }
+        
+        @media (max-width: 768px) { 
+            .rounds-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                max-height: 600px; 
+            }
+            .nav-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .legend { 
+                margin-left: 0; 
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .rounds-grid {
+                grid-template-columns: 1fr;
+            }
+            .round-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="charan.html" class="home-btn" aria-label="Go to home page">
+        <span class="home-icon" aria-hidden="true">⌂</span>
+    </a>
+    <a href="marking.html" class="scoreboard-btn" aria-label="See Scoreboard">
+        <span class="scoreboard-txt" aria-hidden="true">Scoreboard</span>
+    </a>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div class="left-section">
+                    <div class="school-logo"><img src="assets/school_logo.png" alt="OM SHANTI ACADEMY Logo" /></div>
+                    <div class="school-info">
+                        <h1>OM SHANTI ACADEMY</h1>
+                        <div class="school-tagline">"An activity based school"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="competition-section">
+                <div class="competition-title">सातौं अन्तर टोल विकास संस्था महिला (आमा) समुह हाजिरी जवाफ प्रतियोगिता २०८२</div>
+            </div>
+        </div>
+        
+        <div class="nav-controls">
+            <div class="legend">
+                <div class="instruction-text">Select any round to get started.</div>
+                <div class="legend-item">
+                    <div class="legend-color legend-unvisited" aria-hidden="true"></div>
+                    <span>Unvisited</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-visited" aria-hidden="true"></div>
+                    <span>Visited</span>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Reset Progress</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="rounds-grid">
+                <a href="../subject-specific-rounds/ukhan_tukka.html" class="round-card unvisited" data-round="ukhan_tukka">
+                    <div class="round-icon" aria-hidden="true">💭</div>
+                    <h3 class="round-title">उखान</h3>
+                </a>
+                <a href="../subject-specific-rounds/history_and_culture.html" class="round-card unvisited" data-round="history_and_culture">
+                    <div class="round-icon" aria-hidden="true">🏛️</div>
+                    <h3 class="round-title">नेपालको इतिहास</h3>
+                </a>
+                <a href="../subject-specific-rounds/iq.html" class="round-card unvisited" data-round="iq">
+                    <div class="round-icon" aria-hidden="true">🧠</div>
+                    <h3 class="round-title">बौद्धिक परीक्षण</h3>
+                </a>
+                <a href="../subject-specific-rounds/current_affairs.html" class="round-card unvisited" data-round="current_affairs">
+                    <div class="round-icon" aria-hidden="true">📰</div>
+                    <h3 class="round-title">नेपाल र विश्‍वको समसामयिक घटना</h3>
+                </a>
+                <a href="../subject-specific-rounds/gaukhane_katha.html" class="round-card unvisited" data-round="gaukhane_katha">
+                    <div class="round-icon" aria-hidden="true">🗣️</div>
+                    <h3 class="round-title">गाउँखाने कथा</h3>
+                </a>
+                <a href="../subject-specific-rounds/games_and_sports.html" class="round-card unvisited" data-round="games_and_sports">
+                    <div class="round-icon" aria-hidden="true">⚽</div>
+                    <h3 class="round-title">नेपाल/विश्‍वको खेलकुद</h3>
+                </a>
+                <a href="../subject-specific-rounds/geography.html" class="round-card unvisited" data-round="geography">
+                    <div class="round-icon" aria-hidden="true">🌍</div>
+                    <h3 class="round-title">नेपाल तथा विश्वको भूगोल</h3>
+                </a>
+                <a href="../subject-specific-rounds/language_and_literature.html" class="round-card unvisited" data-round="language_and_literature">
+                    <div class="round-icon" aria-hidden="true">📚</div>
+                    <h3 class="round-title">भाषा, साहित्य, कला, धर्म र संस्कृति</h3>
+                </a>
+                <a href="../subject-specific-rounds/science_and_technology.html" class="round-card unvisited" data-round="science_and_technology">
+                    <div class="round-icon" aria-hidden="true">🔬</div>
+                    <h3 class="round-title">स्वास्थ्य, विज्ञान, जनसंख्या तथा वातावरण </h3>
+                </a>
+                <a href="av.html" class="round-card unvisited" data-round="av_round">
+                    <div class="round-icon" aria-hidden="true">🎬</div>
+                    <h3 class="round-title">श्रव्य द‍ृश्य</h3>
+                </a>
+                <a href="../subject-specific-rounds/quotes_and_International_organizations.html" class="round-card unvisited" data-round="quotes_and_International_organizations">
+                    <div class="round-icon" aria-hidden="true">📜</div>
+                    <h3 class="round-title">भनाइ, उक्‍ति तथा अन्तराष्ट्रिय संगठन</h3>
+                </a>
+                <a href="../subject-specific-rounds/miscellaneous.html" class="round-card unvisited" data-round="miscellaneous">
+                    <div class="round-icon" aria-hidden="true">✨</div>
+                    <h3 class="round-title">विविध</h3>
+                </a>
+                <a href="rapidfire_round.html" class="round-card unvisited" data-round="rapidfire_round">
+                    <div class="round-icon" aria-hidden="true">⚡</div>
+                    <h3 class="round-title">Rapid Fire</h3>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const STORAGE_KEY = 'quiz_visited_rounds';
+        
+        class QuizNavigation {
+            constructor() {
+                this.visitedRounds = new Set();
+                this.init();
+            }
+            
+            init() {
+                this.loadVisitedRounds();
+                this.updateRoundStatus();
+                this.setupEventListeners();
+            }
+            
+            loadVisitedRounds() {
+                try {
+                    const stored = localStorage.getItem(STORAGE_KEY);
+                    if (stored) {
+                        this.visitedRounds = new Set(JSON.parse(stored));
+                    }
+                } catch (e) {
+                    console.error('Error loading visited rounds:', e);
+                    this.visitedRounds = new Set();
+                }
+            }
+            
+            saveVisitedRounds() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify([...this.visitedRounds]));
+                } catch (e) {
+                    console.error('Could not save visited rounds:', e);
+                }
+            }
+            
+            markRoundAsVisited(roundId) {
+                if (!roundId) return;
+                this.visitedRounds.add(roundId);
+                this.saveVisitedRounds();
+                this.updateRoundStatus();
+            }
+            
+            resetProgress() {
+                if (confirm('Are you sure you want to reset all progress? This will mark all rounds as unvisited.')) {
+                    this.visitedRounds.clear();
+                    try {
+                        localStorage.removeItem(STORAGE_KEY);
+                    } catch (e) {
+                        console.error('Could not clear storage:', e);
+                    }
+                    this.updateRoundStatus();
+                    this.showResetFeedback();
+                }
+            }
+            
+            showResetFeedback() {
+                const resetBtn = document.getElementById('resetBtn');
+                const originalText = resetBtn.textContent;
+                const originalBg = resetBtn.style.background;
+                
+                resetBtn.textContent = '✅ Reset Complete';
+                resetBtn.style.background = '#48bb78';
+                resetBtn.disabled = true;
+                
+                setTimeout(() => {
+                    resetBtn.textContent = originalText;
+                    resetBtn.style.background = originalBg;
+                    resetBtn.disabled = false;
+                }, 2000);
+            }
+            
+            updateRoundStatus() {
+                const cards = document.querySelectorAll('.round-card');
+                cards.forEach(card => {
+                    const roundId = card.dataset.round;
+                    if (!roundId) return;
+                    
+                    if (this.visitedRounds.has(roundId)) {
+                        card.classList.remove('unvisited');
+                        card.classList.add('visited');
+                    } else {
+                        card.classList.remove('visited');
+                        card.classList.add('unvisited');
+                    }
+                });
+            }
+            
+            setupEventListeners() {
+                const resetBtn = document.getElementById('resetBtn');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => this.resetProgress());
+                }
+                
+                const cards = document.querySelectorAll('.round-card');
+                cards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const roundId = card.dataset.round;
+                        this.markRoundAsVisited(roundId);
+                    });
+                });
+            }
+        }
+        
+        // Initialize when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                new QuizNavigation();
+            });
+        } else {
+            new QuizNavigation();
+        }
+    </script>
+    <script src="../overall-scripts/common-header.js"></script>
+</body>
+</html>

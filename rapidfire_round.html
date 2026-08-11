@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapid Fire Round Quiz</title>
+    <!-- Shared styles from style.css -->
+    <link rel="stylesheet" href="../assets/style.css">
+    <!-- Unique styles for Rapid Fire Round -->
+    <link rel="stylesheet" href="../assets/rapidfire.css">
+</head>
+<body>
+    <a href="dashboard.html" class="go-back-btn">
+        <span class="go-back-arrow">←</span>
+        <span>Dashboard</span>
+    </a>
+    <a href="marking.html" class="scoreboard-btn" aria-label="See Scoreboard">
+        <span class="scoreboard-txt" aria-hidden="true">Scoreboard</span>
+    </a>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div class="left-section">
+                    <div class="school-logo">
+                        <img src="assets/school_logo.png" width="150" height="150" alt="Om Shanti Academy Logo" />
+                    </div>
+                    <div class="school-info">
+                        <h1>OM SHANTI ACADEMY</h1>
+                        <div class="school-tagline">"An activity based school"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="competition-section">
+                <div class="competition-title">सातौं अन्तर टोल विकास संस्था महिला (आमा) समूह हाजिरी जवाफ प्रतियोगिता २०८२</div>
+            </div>
+        </div>
+        
+        <div class="round-nav" id="roundNav">
+            <span class="nav-label">Rounds:</span>
+            <div class="nav-controls">
+                <button class="reset-btn" id="resetBtn">🔄 Reset Progress</button>
+            </div>
+        </div>
+        
+        <div class="main-content" id="mainContent">
+            <div class="no-round" id="noRoundState">
+                <h2>
+                    Welcome to Rapid Fire 🔥 Rounds
+                </h2>
+                <p>Select a round to start. Each round has 10 questions and 1 minute to complete!</p>
+            </div>
+            
+            <div id="roundDisplay" style="display: none;">
+                <div class="content-row">
+                    <div class="question-section" id="questionSection">
+                        <div class="question-header">
+                            <span class="fire-icon">🔥</span>
+                            <h3 id="roundTitle">Round 1</h3>
+                            <div class="question-counter" id="questionCounter">1 / 10</div>
+                        </div>
+                        <div class="question-content blurred" id="questionText">
+                            Select a round to start
+                        </div>
+                        <div class="question-controls">
+                            <button class="control-btn next-btn" id="nextQuestionBtn" disabled>
+                                ➡️ Next Question
+                            </button>
+                            <button class="control-btn reveal-btn" id="revealAnswerBtn" disabled>
+                                🔥 Reveal Answer
+                            </button>
+                        </div>
+                        <div class="answer-section" id="answerSection" style="display: none;">
+                            <div class="answer-content">
+                                <div class="answer-label">Answer:</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-section">
+                        <div class="rapid-fire-timer" id="rapidFireTimer">
+                            <div class="timer-display" id="timerDisplay">01:00</div>
+                            <div class="timer-label">Click to Start Round</div>
+                        </div>
+                        <div class="timer-controls">
+                            <button class="timer-btn" id="startBtn" disabled>▶️ Start Round</button>
+                            <button class="timer-btn stop" id="stopBtn" disabled>⏸️ Stop</button>
+                            <button class="timer-btn" id="resetTimerBtn">🔄 Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        class RapidFireRounds {
+            constructor() {
+                this.currentRound = null;
+                this.currentQuestionIndex = 0;
+                this.completedRounds = new Set();
+                this.timerDuration = 60; // 1 minute
+                this.timeLeft = this.timerDuration;
+                this.timerInterval = null;
+                this.isTimerRunning = false;
+                this.isRoundStarted = false;
+                this.audioContext = null;
+                this.init();
+            }
+
+            init() {
+                this.loadCompletedRounds();
+                this.createRoundNavigation();
+                this.setupEventListeners();
+                this.handleUrlRouting();
+                this.updateRoundStatus();
+                this.initAudio();
+                this.updateTimerDisplay();
+            }
+
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Audio context not available');
+                }
+            }
+
+            playBeep() {
+                if (!this.audioContext) return;
+                
+                try {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+        
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+        
+                    oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+                    oscillator.type = 'sine';
+        
+                    gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+        
+                    oscillator.start(this.audioContext.currentTime);
+                    oscillator.stop(this.audioContext.currentTime + 0.1);
+                } catch (e) {
+                    console.log('Could not play beep');
+                }
+            }
+
+            // Storage Management
+            loadCompletedRounds() {
+                try {
+                    const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMPLETED_ROUNDS) || '[]');
+                    this.completedRounds = new Set(stored);
+                } catch (e) {
+                    this.completedRounds = new Set();
+                }
+            }
+
+            saveCompletedRounds() {
+                try {
+                    localStorage.setItem(STORAGE_KEYS.COMPLETED_ROUNDS, JSON.stringify([...this.completedRounds]));
+                } catch (e) {
+                    console.log('Could not save completed rounds');
+                }
+            }
+
+            markRoundAsCompleted(roundId) {
+                this.completedRounds.add(roundId);
+                this.saveCompletedRounds();
+                this.updateRoundStatus();
+            }
+
+            resetProgress() {
+                if (confirm('Are you sure you want to reset all progress? This will mark all rounds as incomplete and cannot be undone.')) {
+                    this.completedRounds.clear();
+                    this.resetRoundState();
+                    this.stopTimer();
+                    this.resetTimer();
+                    try {
+                        localStorage.removeItem(STORAGE_KEYS.COMPLETED_ROUNDS);
+                    } catch (e) {
+                        console.log('Could not clear storage');
+                    }
+                    this.updateRoundStatus();
+                    
+                    // Show success message
+                    const resetBtn = document.getElementById('resetBtn');
+                    const originalText = resetBtn.textContent;
+                    resetBtn.textContent = '✅ Reset Complete';
+                    resetBtn.style.background = '#48bb78';
+                    setTimeout(() => {
+                        resetBtn.textContent = originalText;
+                        resetBtn.style.background = '';
+                    }, 2000);
+                }
+            }
+
+            updateRoundStatus() {
+                // Update navigation links
+                document.querySelectorAll('.round-link').forEach(link => {
+                    const roundId = parseInt(link.dataset.roundId);
+                    if (this.completedRounds.has(roundId)) {
+                        link.classList.add('completed');
+                    } else {
+                        link.classList.remove('completed');
+                    }
+                });
+            }
+
+            createRoundNavigation() {
+                const nav = document.getElementById('roundNav');
+                
+                Object.keys(QUIZ_ROUNDS).forEach(roundId => {
+                    const round = QUIZ_ROUNDS[roundId];
+                    const link = document.createElement('a');
+                    link.href = `#round-${roundId}`;
+                    link.className = 'round-link';
+                    link.textContent = `Round ${roundId}`;
+                    link.dataset.roundId = roundId;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.loadRound(parseInt(roundId));
+                        this.updateUrl(roundId);
+                    });
+                    
+                    // Insert before the controls
+                    const controls = nav.querySelector('.nav-controls');
+                    nav.insertBefore(link, controls);
+                });
+            }
+
+            handleUrlRouting() {
+                const hash = window.location.hash;
+                if (hash.startsWith('#round-')) {
+                    const roundId = parseInt(hash.replace('#round-', ''));
+                    if (QUIZ_ROUNDS[roundId]) {
+                        this.loadRound(roundId);
+                    }
+                }
+
+                window.addEventListener('hashchange', () => {
+                    const hash = window.location.hash;
+                    if (hash.startsWith('#round-')) {
+                        const roundId = parseInt(hash.replace('#round-', ''));
+                        if (QUIZ_ROUNDS[roundId]) {
+                            this.loadRound(roundId);
+                        }
+                    } else if (hash === '') {
+                        this.showNoRoundState();
+                    }
+                });
+            }
+
+            updateUrl(roundId) {
+                window.history.pushState(null, '', `#round-${roundId}`);
+            }
+
+            loadRound(roundId) {
+                const round = QUIZ_ROUNDS[roundId];
+                if (!round) return;
+
+                this.currentRound = roundId;
+                this.currentQuestionIndex = 0;
+                this.isRoundStarted = false;
+                this.resetAnswerState();
+                this.stopTimer();
+                this.resetTimer();
+
+                // Update navigation
+                document.querySelectorAll('.round-link').forEach(link => {
+                    link.classList.toggle('active', link.dataset.roundId == roundId);
+                });
+
+                // Update round content
+                document.getElementById('roundTitle').textContent = `Round ${roundId}: ${round.title}`;
+                this.updateQuestionDisplay();
+
+                // Show round display and hide no-round state
+                document.getElementById('noRoundState').style.display = 'none';
+                document.getElementById('roundDisplay').style.display = 'block';
+                
+                // Make sure only the question content is blurred initially
+                const questionContent = document.getElementById('questionText');
+                questionContent.classList.add('blurred');
+                
+                // Enable start button
+                document.getElementById('startBtn').disabled = false;
+            }
+
+            showNoRoundState() {
+                this.currentRound = null;
+                this.stopTimer();
+                this.resetTimer();
+                
+                // Update navigation
+                document.querySelectorAll('.round-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                // Show no-round state and hide round display
+                document.getElementById('noRoundState').style.display = 'flex';
+                document.getElementById('roundDisplay').style.display = 'none';
+            }
+
+            updateQuestionDisplay() {
+                if (!this.currentRound) return;
+                
+                const round = QUIZ_ROUNDS[this.currentRound];
+                const question = round.questions[this.currentQuestionIndex];
+                
+                if (question) {
+                    document.getElementById('questionCounter').textContent = `${this.currentQuestionIndex + 1} / 10`;
+                    
+                    // Always show question initially
+                    const questionContent = document.getElementById('questionText');
+                    questionContent.textContent = question.question;
+                    questionContent.classList.remove('answer-mode');
+                    
+                    // Store answer for reveal
+                    questionContent.dataset.answer = question.answer;
+                    
+                    // Update button states
+                    const nextBtn = document.getElementById('nextQuestionBtn');
+                    const revealBtn = document.getElementById('revealAnswerBtn');
+                    
+                    if (this.isRoundStarted) {
+                        nextBtn.disabled = false;
+                        revealBtn.disabled = false;
+                        revealBtn.innerHTML = '🔥 Reveal Answer';
+                        revealBtn.classList.remove('show-question');
+                    } else {
+                        nextBtn.disabled = true;
+                        revealBtn.disabled = true;
+                    }
+                }
+            }
+
+            nextQuestion() {
+                if (!this.currentRound || !this.isRoundStarted) return;
+                
+                if (this.currentQuestionIndex < 9) {
+                    this.currentQuestionIndex++;
+                    this.updateQuestionDisplay();
+                    this.resetAnswerState();
+                } else {
+                    // Round completed
+                    this.completeRound();
+                }
+            }
+
+            completeRound() {
+                this.stopTimer();
+                this.markRoundAsCompleted(this.currentRound);
+                
+                // Show completion message
+                document.getElementById('questionText').innerHTML = `
+                    <div style="color: white; font-size: 1.2em;">
+                         समुह (Round) ${this.currentRound} सम्पन्‍न<br>
+                        अब अर्को Round चयन गर्नुहोस् ।
+                    </div>
+                `;
+                
+                // Disable buttons
+                document.getElementById('nextQuestionBtn').disabled = true;
+                document.getElementById('revealAnswerBtn').disabled = true;
+                document.getElementById('startBtn').disabled = true;
+                
+                // Play completion sound
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => this.playBeep(), i * 200);
+                }
+            }
+
+            resetRoundState() {
+                this.currentRound = null;
+                this.currentQuestionIndex = 0;
+                this.isRoundStarted = false;
+                this.resetAnswerState();
+                
+                // Reset UI
+                document.getElementById('roundTitle').textContent = 'Select Round';
+                document.getElementById('questionCounter').textContent = '0 / 10';
+                document.getElementById('questionText').textContent = 'Select a round to start';
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('nextQuestionBtn').disabled = true;
+                document.getElementById('revealAnswerBtn').disabled = true;
+                
+                // Make sure section is blurred
+                document.getElementById('questionSection').classList.add('blurred');
+            }
+
+            resetAnswerState() {
+                const questionContent = document.getElementById('questionText');
+                questionContent.classList.remove('answer-mode');
+                
+                const revealBtn = document.getElementById('revealAnswerBtn');
+                revealBtn.innerHTML = '🔥 Reveal Answer';
+                revealBtn.classList.remove('show-question');
+            }
+
+            setupEventListeners() {
+                document.getElementById('nextQuestionBtn').addEventListener('click', () => this.nextQuestion());
+                document.getElementById('revealAnswerBtn').addEventListener('click', () => this.revealAnswer());
+                document.getElementById('resetBtn').addEventListener('click', () => this.resetProgress());
+                
+                // Timer controls
+                document.getElementById('startBtn').addEventListener('click', () => this.startRound());
+                document.getElementById('stopBtn').addEventListener('click', () => this.stopTimer());
+                document.getElementById('resetTimerBtn').addEventListener('click', () => this.resetTimer());
+                document.getElementById('rapidFireTimer').addEventListener('click', () => {
+                    if (!this.isTimerRunning && this.currentRound && !this.isRoundStarted) {
+                        this.startRound();
+                    }
+                });
+            }
+            
+            revealAnswer() {
+                if (!this.currentRound || !this.isRoundStarted) return;
+
+                const questionContent = document.getElementById('questionText');
+                const revealBtn = document.getElementById('revealAnswerBtn');
+                
+                if (questionContent.classList.contains('answer-mode')) {
+                    // Currently showing answer, switch back to question
+                    const round = QUIZ_ROUNDS[this.currentRound];
+                    const question = round.questions[this.currentQuestionIndex];
+                    questionContent.textContent = question.question;
+                    questionContent.classList.remove('answer-mode');
+                    revealBtn.innerHTML = '🔥 Reveal Answer';
+                    revealBtn.classList.remove('show-question');
+                } else {
+                    // Currently showing question, switch to answer
+                    const answer = questionContent.dataset.answer;
+                    questionContent.textContent = answer;
+                    questionContent.classList.add('answer-mode');
+                    revealBtn.innerHTML = '❓ Show Question';
+                    revealBtn.classList.add('show-question');
+                }
+            }
+
+            // Timer functionality
+            startRound() {
+                if (!this.currentRound || this.isTimerRunning || this.timeLeft <= 0) return;
+
+                if (this.audioContext && this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+
+                this.isRoundStarted = true;
+                this.isTimerRunning = true;
+                
+                // Unblur only the question content with animation
+                const questionContent = document.getElementById('questionText');
+                questionContent.classList.remove('blurred');
+                questionContent.classList.add('unblurring');
+                
+                // Remove the unblurring class after animation completes
+                setTimeout(() => {
+                    questionContent.classList.remove('unblurring');
+                }, 800);
+                
+                this.updateTimerUI();
+                this.updateQuestionDisplay();
+                
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timeLeft <= 10 && this.timeLeft > 0) {
+                        this.playBeep();
+                        document.getElementById('rapidFireTimer').classList.add('warning');
+                    }
+                    
+                    if (this.timeLeft <= 0) {
+                        this.finishRound();
+                    }
+                }, 1000);
+            }
+
+            stopTimer() {
+                if (!this.isTimerRunning) return;
+                
+                this.isTimerRunning = false;
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+                
+                this.updateTimerUI();
+                document.getElementById('rapidFireTimer').classList.remove('active', 'warning');
+            }
+
+            resetTimer() {
+                this.stopTimer();
+                this.timeLeft = this.timerDuration;
+                this.isRoundStarted = false;
+                this.updateTimerDisplay();
+                document.getElementById('rapidFireTimer').classList.remove('finished', 'warning');
+                
+                // Re-blur only the question content when timer is reset
+                if (this.currentRound) {
+                    const questionContent = document.getElementById('questionText');
+                    questionContent.classList.add('blurred');
+                    questionContent.classList.remove('unblurring');
+                    
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('nextQuestionBtn').disabled = true;
+                    document.getElementById('revealAnswerBtn').disabled = true;
+                    this.currentQuestionIndex = 0;
+                    this.updateQuestionDisplay();
+                }
+            }
+
+            finishRound() {
+                this.stopTimer();
+                document.getElementById('rapidFireTimer').classList.add('finished');
+                document.getElementById('rapidFireTimer').classList.remove('warning');
+                
+                // Auto-complete the round
+                this.completeRound();
+                
+                // Play finish sound
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => this.playBeep(), i * 200);
+                }
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('timerDisplay').textContent = display;
+                
+                const timerElement = document.getElementById('rapidFireTimer');
+                const label = timerElement.querySelector('.timer-label');
+                
+                if (this.timeLeft <= 0) {
+                    label.textContent = 'Time\'s Up!';
+                } else if (this.isTimerRunning) {
+                    label.textContent = 'Round Active';
+                } else if (this.currentRound) {
+                    label.textContent = 'Click to Start Round';
+                } else {
+                    label.textContent = 'Select Round First';
+                }
+            }
+
+            updateTimerUI() {
+                const startBtn = document.getElementById('startBtn');
+                const stopBtn = document.getElementById('stopBtn');
+                const timerElement = document.getElementById('rapidFireTimer');
+                
+                if (this.isTimerRunning) {
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    timerElement.classList.add('active');
+                } else {
+                    startBtn.disabled = !this.currentRound || this.timeLeft <= 0 || this.isRoundStarted;
+                    stopBtn.disabled = true;
+                    timerElement.classList.remove('active');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new RapidFireRounds();
+        });
+    </script>
+    <script src="../database/rapidfire.js"></script>
+    <!-- Add this before </body> -->
+<script src="../overall-scripts/common-header.js"></script>
+</body>
+</html>
