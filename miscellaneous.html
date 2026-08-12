@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miscellaneous</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+     <!-- Add this HTML right after your opening <body> tag in each round HTML file -->
+<a href="../otherwebpages/dashboard.html" class="go-back-btn">
+    <span class="go-back-arrow">←</span>
+</a>
+<a href="../otherwebpages/marking.html" class="scoreboard-btn" aria-label="See Scoreboard">
+        <span class="scoreboard-txt" aria-hidden="true">Scoreboard</span>
+    </a>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div class="left-section">
+                    <div class="school-logo">
+                        <img src="../assets/school_logo.png" width="150" height="150" alt="Om Shanti Academy Logo" />
+                    </div>
+                    <div class="school-info">
+                        <h1>OM SHANTI ACADEMY</h1>
+                        <div class="school-tagline">"An activity based school"</div>
+                    </div>
+                </div>
+            </div>
+            <div class="competition-section">
+                <div class="competition-title">सातौं अन्तर टोल विकास संस्था महिला (आमा) समुह हाजिरी जवाफ प्रतियोगिता २०८२</div>
+            </div>
+        </div>
+        
+        <div class="question-nav" id="questionNav">
+            <span class="nav-label">Questions:</span>
+            <div class="nav-controls">
+                <button class="reset-btn" id="resetBtn">🔄 Reset Progress</button>
+            </div>
+        </div>
+        
+        <div class="main-content" id="mainContent">
+            <div class="no-question" id="noQuestionState">
+                <h2>विविध</h2>
+                <p>Select a question from the navigation above to get started.</p>
+            </div>
+            
+            <div id="questionDisplay" style="display: none;">
+                <div class="question-section">
+                    <div class="question-text-area">
+                        <div class="question-header">
+                            <h3 id="questionRound">Audio Visual Round</h3>
+                        </div>
+                        <div class="question-content" id="questionText">
+                            Select a question to display
+                        </div>
+                        <div class="reveal-button-container">
+                            <button class="reveal-btn" id="revealAnswerBtn">
+                                📝 Reveal Answer
+                            </button>
+                        </div>
+                        <div class="answer-section" id="answerSection">
+                            <div class="answer-content">
+                                <div class="answer-label" id="answerLabel">
+                                    Answer:
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timers-section">
+                    <div class="timers-container" id="timersContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 1️⃣ Load database first -->
+        <script src="../database/miscellaneous.js"></script>
+        
+        <!-- 2️⃣ Load common script second -->
+        <script src="../overall-scripts/script.js"></script>
+        <!-- Add this before </body> -->
+<script src="../overall-scripts/common-header.js"></script>
+</body>
+</html>
