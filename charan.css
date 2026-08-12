@@ -1,0 +1,432 @@
+/*charan css*/
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Belwe+MT&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            background-image: url('assets/background.png');
+            background-color: #f7fafc;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.97);
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .page.active {
+            display: flex;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .header {
+            background-color: #3182ce;
+            padding: 10px 25px;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .school-logo {
+            width: 85px;
+            height: 85px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .school-logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .school-info h1 {
+            font-family: 'Belwe MT', 'Times New Roman', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        .school-tagline {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            font-style: italic;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* Home Button */
+        .home-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #3182ce, #2d3748);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 2rem;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .home-btn:hover {
+            background: linear-gradient(135deg, #2d3748, #3182ce);
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(49, 130, 206, 0.5);
+        }
+
+        /* Main Page Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px 40px;
+        }
+
+        .competition-title-main {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInDown 1s ease-out;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .competition-title-main::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s infinite linear;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            width: 280px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-top: 6px solid;
+            animation: fadeInUp 1s ease-out;
+            animation-fill-mode: backwards;
+        }
+
+        .main-card:nth-child(1) {
+            border-top-color: #3182ce;
+            animation-delay: 0.2s;
+        }
+
+        .main-card:nth-child(2) {
+            border-top-color: #dd6b20;
+            animation-delay: 0.4s;
+        }
+
+        .main-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            color: #718096;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .badge-blue {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-orange {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        /* Detail View Styles */
+        .detail-view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .detail-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 40px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-left: 6px solid;
+        }
+
+        .detail-header.blue {
+            border-left-color: #3182ce;
+        }
+
+        .detail-header.orange {
+            border-left-color: #dd6b20;
+        }
+
+        .detail-header h2 {
+            color: #2d3748;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .detail-header p {
+            color: #718096;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .carousel-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 40px;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border-top: 6px solid;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .detail-card.blue {
+            border-top-color: #3182ce;
+        }
+
+        .detail-card.orange {
+            border-top-color: #dd6b20;
+        }
+
+        .detail-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3182ce;
+            margin-bottom: 15px;
+        }
+
+        .detail-card.orange .number {
+            color: #dd6b20;
+        }
+
+        .detail-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .detail-card p {
+            color: #718096;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            padding: 25px;
+        }
+
+        .nav-btn, .back-btn {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+        }
+
+        .nav-btn:hover:not(:disabled), .back-btn:hover {
+            background: linear-gradient(135deg, #2c5282, #3182ce);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #cbd5e0;
+        }
+
+        .page-indicator {
+            color: #2d3748;
+            font-size: 1rem;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .back-btn-container {
+            text-align: center;
+            padding-bottom: 30px;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 900px) and (max-height: 800px) {
+            html, body { overflow: auto; }
+        }
+
+        @media (max-width: 768px) {
+            html, body { overflow: auto; }
+            .school-info h1 { font-size: 1.8rem; }
+            .competition-title-main { font-size: 1.4rem; padding: 12px 25px; }
+            .cards-container { gap: 20px; }
+            .main-card { width: 90%; max-width: 350px; }
+            .detail-card { padding: 30px 25px; }
+            .detail-card h3 { font-size: 1.3rem; }
+            .controls { flex-wrap: wrap; }
+            .home-btn { width: 50px; height: 50px; font-size: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .competition-title-main { font-size: 1.2rem; padding: 10px 20px; }
+            .detail-header { margin: 20px 20px 15px; padding: 20px; }
+            .home-btn { width: 45px; height: 45px; font-size: 1.3rem; }
+        }
