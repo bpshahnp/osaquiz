@@ -1,0 +1,304 @@
+/*rules css*/
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Belwe+MT&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            background-image: url('assets/background.png');
+            background-color: #f7fafc;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.97);
+        }
+
+        .header {
+            background-color: #3182ce;
+            padding: 8px 25px;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .competition-title-main {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            text-align: center;
+            margin-bottom:20px;
+        }
+
+        .competition-title-main::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s infinite linear;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .school-logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .school-logo img {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+
+        .school-info h1 {
+            font-family: 'Belwe MT', 'Times New Roman', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .school-tagline {
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            font-style: italic;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .home-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #3182ce, #2d3748);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.6rem;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .home-btn:hover {
+            background: linear-gradient(135deg, #2d3748, #3182ce);
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(49, 130, 206, 0.5);
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px 30px;
+            overflow: hidden;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 15px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .page-title h2 {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .page-title h2::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s infinite linear;
+        }
+
+        .rules-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            animation: fadeInUp 1s ease-out;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .rules-column {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+
+        .rules-column:first-child {
+            border-top-color: #3182ce;
+        }
+
+        .rules-column:last-child {
+            border-top-color: #dd6b20;
+        }
+
+        .rule-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .rule-item:hover {
+            background: #edf2f7;
+            transform: translateX(5px);
+        }
+
+        .rule-number {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(49, 130, 206, 0.3);
+        }
+
+        .rules-column:last-child .rule-number {
+            background: linear-gradient(135deg, #dd6b20, #c05621);
+            box-shadow: 0 4px 10px rgba(221, 107, 32, 0.3);
+        }
+
+        .rule-text {
+            flex: 1;
+            color: #2d3748;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .icon {
+            font-size: 1.1rem;
+            margin-right: 6px;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .rules-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            html, body {
+                overflow: auto;
+            }
+
+            .content-wrapper {
+                overflow-y: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .school-info h1 { font-size: 1.5rem; }
+            .page-title h2 { font-size: 1.3rem; padding: 8px 25px; }
+            .rules-column { padding: 15px; }
+            .rule-text { font-size: 0.88rem; }
+            .home-btn { width: 45px; height: 45px; font-size: 1.4rem; }
+        }
+
+        @media (max-width: 480px) {
+            .page-title h2 { font-size: 1.1rem; padding: 6px 20px; }
+            .content-wrapper { padding: 10px 15px; }
+            .home-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+        }

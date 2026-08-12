@@ -1,0 +1,387 @@
+/* Rapid Fire Specific Styles */
+        
+        /* Round Navigation - Override question-nav for rounds */
+        .round-nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .round-link {
+            background: #48bb78;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .round-link:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .round-link.active {
+            background: #3182ce;
+            color: white;
+        }
+        .round-link.completed {
+            background: #e53e3e;
+            color: white;
+        }
+        .round-link.completed.active {
+            background: #2d3748;
+            color: white;
+        }
+        
+        /* Content Row Layout */
+        .content-row {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        /* Question Section Enhancements for Rapid Fire */
+        .question-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .question-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .question-counter {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .fire-icon {
+            font-size: 1.5rem;
+            animation: flicker 0.8s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            25% { opacity: 0.8; transform: scale(1.1); }
+            50% { opacity: 1; transform: scale(0.95); }
+            75% { opacity: 0.9; transform: scale(1.05); }
+        }
+        
+        /* Question Content Specific to Rapid Fire */
+        .question-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+            position: relative;
+        }
+        
+        .question-content.blurred {
+            filter: blur(8px);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        .question-content.blurred::after {
+            content: 'Start the round to unlock questions! 🔥';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(229, 62, 62, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            filter: none;
+        }
+        
+        .question-content.unblurring {
+            animation: unblur 0.8s ease-out;
+        }
+        
+        @keyframes unblur {
+            0% { filter: blur(8px); opacity: 0.6; }
+            100% { filter: blur(0px); opacity: 1; }
+        }
+        
+        .question-content.answer-mode {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            box-shadow: 0 6px 15px rgba(72, 187, 120, 0.4);
+            animation: answer-reveal 0.5s ease;
+        }
+        
+        @keyframes answer-reveal {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Question Controls */
+        .question-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .control-btn {
+            background-color: #48bb78;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+        
+        .control-btn:hover:not(:disabled) {
+            background-color: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+        }
+        
+        .control-btn:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .next-btn {
+            background-color: #4299e1;
+        }
+        
+        .next-btn:hover:not(:disabled) {
+            background-color: #3182ce;
+        }
+        
+        .reveal-btn {
+            background-color: #ed8936;
+        }
+        
+        .reveal-btn:hover:not(:disabled) {
+            background-color: #dd6b20;
+        }
+        
+        .reveal-btn.show-question {
+            background-color: #4299e1;
+        }
+        
+        .reveal-btn.show-question:hover:not(:disabled) {
+            background-color: #3182ce;
+        }
+        
+        /* Timer Section */
+        .timer-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 250px;
+        }
+        
+        .rapid-fire-timer {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(229, 62, 62, 0.4);
+            position: relative;
+            margin-bottom: 20px;
+            border: 4px solid #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .rapid-fire-timer:hover {
+            transform: scale(1.05);
+        }
+        
+        .rapid-fire-timer.active {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            animation: pulse 1s infinite;
+        }
+        
+        .rapid-fire-timer.warning {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            animation: warning-pulse 0.5s infinite;
+        }
+        
+        .rapid-fire-timer.finished {
+            background: linear-gradient(135deg, #718096, #4a5568);
+            cursor: not-allowed;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes warning-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.08); }
+        }
+        
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .timer-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .timer-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .timer-btn:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+        }
+        
+        .timer-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .timer-btn.stop {
+            background: #e53e3e;
+        }
+        
+        .timer-btn.stop:hover {
+            background: #c53030;
+        }
+        
+        /* No Round Selected State */
+        .no-round {
+            text-align: center;
+            padding: 50px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin: 20px;
+            max-width: 700px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+        .no-round h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        /* Responsive Adjustments for Rapid Fire */
+        @media (max-width: 1200px) {
+            .content-row {
+                flex-direction: column;
+            }
+            .timer-section {
+                min-width: auto;
+            }
+            .rapid-fire-timer {
+                width: 150px;
+                height: 150px;
+            }
+            .timer-display {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .question-controls {
+                flex-direction: column;
+            }
+            .control-btn {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+            .no-round h2 {
+                font-size: 1.8rem;
+            }
+            .rapid-fire-timer {
+                width: 120px;
+                height: 120px;
+            }
+            .timer-display {
+                font-size: 1.5rem;
+            }
+            .timer-label {
+                font-size: 0.8rem;
+            }
+            .question-content.blurred::after {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .question-content.blurred::after {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+        }
